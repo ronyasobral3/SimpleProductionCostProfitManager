@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>">
+  <title>Gestão de Custos e Lucro - Marketplaces</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .marketplace-manager {
+      padding: 30px;
+    }
+
+    .add-marketplace-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .add-marketplace-section h2 {
+      color: #667eea;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-clear {
+      background: #dc3545;
+      font-size: 12px;
+      padding: 8px 16px;
+    }
+
+    .btn-clear:hover {
+      background: #c82333;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #5568d3;
+    }
+
+    .btn-remove {
+      background: #dc3545;
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+
+    .btn-remove:hover {
+      background: #c82333;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid #e0e0e0;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 15px 25px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: #666;
+      font-weight: 600;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    .tab:hover {
+      color: #667eea;
+    }
+
+    .tab.active {
+      color: #667eea;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .product-form {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .product-form h3 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+
+    .result-box {
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+    }
+
+    .result-box h3 {
+      color: #667eea;
+      margin-bottom: 20px;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-label {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .result-value {
+      font-weight: 700;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .result-value.positive {
+      color: #28a745;
+    }
+
+    .result-value.negative {
+      color: #dc3545;
+    }
+
+    .marketplace-info {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border-left: 4px solid #667eea;
+    }
+
+    .marketplace-info strong {
+      color: #667eea;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>💼 Gestão de Custos e Lucro</h1>
+      <p>Gerencie seus custos de produção e calcule o lucro por marketplace</p>
+    </header>
+
+    <div class="marketplace-manager">
+      <div class="add-marketplace-section">
+        <h2>
+          <span>Adicionar Marketplace</span>
+          <button class="btn-clear" onclick="clearAllData()">🗑️ Limpar Todos os Dados</button>
+        </h2>
+        <div class="input-group">
+          <input type="text" id="marketplaceName" placeholder="Nome do Marketplace (ex: Shopee)">
+          <input type="number" id="marketplaceFee" placeholder="Taxa de venda (%)" step="0.01" min="0" max="100">
+          <button onclick="addMarketplace()">➕ Adicionar Marketplace</button>
+        </div>
+      </div>
+
+      <div class="tabs" id="tabsContainer"></div>
+      <div id="tabContentContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    let marketplaces = {};
+    let products = {};
+
+    // Carregar dados salvos ao iniciar
+    function loadData() {
+      const savedMarketplaces = localStorage.getItem('marketplaces');
+      const savedProducts = localStorage.getItem('products');
+
+      if (savedMarketplaces) {
+        marketplaces = JSON.parse(savedMarketplaces);
+      }
+
+      if (savedProducts) {
+        products = JSON.parse(savedProducts);
+      }
+    }
+
+    // Salvar dados no localStorage
+    function saveData() {
+      localStorage.setItem('marketplaces', JSON.stringify(marketplaces));
+      localStorage.setItem('products', JSON.stringify(products));
+    }
+
+    function addMarketplace() {
+      const name = document.getElementById('marketplaceName').value.trim();
+      const fee = parseFloat(document.getElementById('marketplaceFee').value);
+
+      if (!name) {
+        alert('Por favor, insira o nome do marketplace');
+        return;
+      }
+
+      if (isNaN(fee) || fee < 0) {
+        alert('Por favor, insira uma taxa válida');
+        return;
+      }
+
+      if (marketplaces[name]) {
+        alert('Este marketplace já existe!');
+        return;
+      }
+
+      marketplaces[name] = { fee: fee };
+      products[name] = [];
+
+      document.getElementById('marketplaceName').value = '';
+      document.getElementById('marketplaceFee').value = '';
+
+      saveData();
+      renderTabs();
+    }
+
+    function removeMarketplace(name) {
+      if (confirm(`Deseja remover o marketplace "${name}"?`)) {
+        delete marketplaces[name];
+        delete products[name];
+        saveData();
+        renderTabs();
+      }
+    }
+
+    function addProduct(marketplace) {
+      const productName = document.getElementById(`${marketplace}-productName`).value.trim();
+      const productionCost = parseFloat(document.getElementById(`${marketplace}-productionCost`).value) || 0;
+      const packagingCost = parseFloat(document.getElementById(`${marketplace}-packagingCost`).value) || 0;
+      const shippingCost = parseFloat(document.getElementById(`${marketplace}-shippingCost`).value) || 0;
+      const otherCosts = parseFloat(document.getElementById(`${marketplace}-otherCosts`).value) || 0;
+      const salePrice = parseFloat(document.getElementById(`${marketplace}-salePrice`).value) || 0;
+
+      if (!productName) {
+        alert('Por favor, insira o nome do produto');
+        return;
+      }
+
+      if (salePrice <= 0) {
+        alert('Por favor, insira um preço de venda válido');
+        return;
+      }
+
+      const product = {
+        id: Date.now(),
+        name: productName,
+        productionCost,
+        packagingCost,
+        shippingCost,
+        otherCosts,
+        salePrice
+      };
+
+      if (!products[marketplace]) {
+        products[marketplace] = [];
+      }
+
+      products[marketplace].push(product);
+
+      // Limpar formulário
+      document.getElementById(`${marketplace}-productName`).value = '';
+      document.getElementById(`${marketplace}-productionCost`).value = '';
+      document.getElementById(`${marketplace}-packagingCost`).value = '';
+      document.getElementById(`${marketplace}-shippingCost`).value = '';
+      document.getElementById(`${marketplace}-otherCosts`).value = '';
+      document.getElementById(`${marketplace}-salePrice`).value = '';
+
+      saveData();
+      renderProductList(marketplace);
+      calculateTotals(marketplace);
+    }
+
+    function removeProduct(marketplace, productId) {
+      products[marketplace] = products[marketplace].filter(p => p.id !== productId);
+      saveData();
+      renderProductList(marketplace);
+      calculateTotals(marketplace);
+    }
+
+    function renderProductList(marketplace) {
+      const container = document.getElementById(`${marketplace}-productList`);
+      const marketplaceFee = marketplaces[marketplace].fee;
+
+      if (!products[marketplace] || products[marketplace].length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Nenhum produto cadastrado</p>';
+        return;
+      }
+
+      let html = '<table style="width: 100%; border-collapse: collapse;">';
+      html += `
+                <thead>
+                    <tr style="background: #667eea; color: white;">
+                        <th style="padding: 12px; text-align: left;">Produto</th>
+                        <th style="padding: 12px; text-align: right;">Custo Total</th>
+                        <th style="padding: 12px; text-align: right;">Preço Venda</th>
+                        <th style="padding: 12px; text-align: right;">Taxa (${marketplaceFee}%)</th>
+                        <th style="padding: 12px; text-align: right;">Lucro</th>
+                        <th style="padding: 12px; text-align: right;">Margem</th>
+                        <th style="padding: 12px; text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+      products[marketplace].forEach(product => {
+        const totalCost = product.productionCost + product.packagingCost + product.shippingCost + product.otherCosts;
+        const fee = (product.salePrice * marketplaceFee) / 100;
+        const netRevenue = product.salePrice - fee;
+        const profit = netRevenue - totalCost;
+        const profitMargin = product.salePrice > 0 ? (profit / product.salePrice) * 100 : 0;
+
+        const profitColor = profit >= 0 ? '#28a745' : '#dc3545';
+
+        html += `
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 12px;">${product.name}</td>
+                        <td style="padding: 12px; text-align: right;">${formatCurrency(totalCost)}</td>
+                        <td style="padding: 12px; text-align: right;">${formatCurrency(product.salePrice)}</td>
+                        <td style="padding: 12px; text-align: right;">${formatCurrency(fee)}</td>
+                        <td style="padding: 12px; text-align: right; color: ${profitColor}; font-weight: bold;">${formatCurrency(profit)}</td>
+                        <td style="padding: 12px; text-align: right; color: ${profitColor}; font-weight: bold;">${profitMargin.toFixed(2)}%</td>
+                        <td style="padding: 12px; text-align: center;">
+                            <button class="btn-remove" onclick="removeProduct('${marketplace}', ${product.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function calculateTotals(marketplace) {
+      const resultsContainer = document.getElementById(`${marketplace}-totals`);
+
+      if (!products[marketplace] || products[marketplace].length === 0) {
+        resultsContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Adicione produtos para ver a análise geral</p>';
+        return;
+      }
+
+      let totalCost = 0;
+      let totalRevenue = 0;
+      let totalFees = 0;
+      let totalProfit = 0;
+      const marketplaceFee = marketplaces[marketplace].fee;
+
+      products[marketplace].forEach(product => {
+        const cost = product.productionCost + product.packagingCost + product.shippingCost + product.otherCosts;
+        const fee = (product.salePrice * marketplaceFee) / 100;
+
+        totalCost += cost;
+        totalRevenue += product.salePrice;
+        totalFees += fee;
+      });
+
+      const netRevenue = totalRevenue - totalFees;
+      totalProfit = netRevenue - totalCost;
+      const averageMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
+
+      const profitColor = totalProfit >= 0 ? 'positive' : 'negative';
+
+      resultsContainer.innerHTML = `
+                <div class="result-item">
+                    <span class="result-label">Total de Produtos:</span>
+                    <span class="result-value">${products[marketplace].length}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Custo Total (Todos Produtos):</span>
+                    <span class="result-value">${formatCurrency(totalCost)}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Receita Bruta Total:</span>
+                    <span class="result-value">${formatCurrency(totalRevenue)}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Total em Taxas (${marketplaceFee}%):</span>
+                    <span class="result-value">${formatCurrency(totalFees)}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Receita Líquida Total:</span>
+                    <span class="result-value">${formatCurrency(netRevenue)}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Lucro Líquido Total:</span>
+                    <span class="result-value ${profitColor}">${formatCurrency(totalProfit)}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Margem Média:</span>
+                    <span class="result-value ${profitColor}">${averageMargin.toFixed(2)}%</span>
+                </div>
+            `;
+    }
+
+    function renderTabs() {
+      const tabsContainer = document.getElementById('tabsContainer');
+      const contentContainer = document.getElementById('tabContentContainer');
+
+      tabsContainer.innerHTML = '';
+      contentContainer.innerHTML = '';
+
+      const marketplaceNames = Object.keys(marketplaces);
+
+      if (marketplaceNames.length === 0) {
+        contentContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Adicione um marketplace para começar</p>';
+        return;
+      }
+
+      marketplaceNames.forEach((name, index) => {
+        const tab = document.createElement('button');
+        tab.className = 'tab' + (index === 0 ? ' active' : '');
+        tab.textContent = name;
+        tab.onclick = () => switchTab(name);
+        tabsContainer.appendChild(tab);
+
+        const content = document.createElement('div');
+        content.className = 'tab-content' + (index === 0 ? ' active' : '');
+        content.id = `tab-${name}`;
+        content.innerHTML = createTabContent(name, marketplaces[name].fee);
+        contentContainer.appendChild(content);
+      });
+    }
+
+    function createTabContent(name, fee) {
+      return `
+                <div class="marketplace-info">
+                    <strong>${name}</strong> - Taxa de venda: <strong>${fee}%</strong>
+                    <button class="btn-remove" onclick="removeMarketplace('${name}')" style="float: right;">🗑️ Remover</button>
+                </div>
+
+                <div class="product-form">
+                    <h3>📦 Adicionar Produto</h3>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Nome do Produto</label>
+                            <input type="text" id="${name}-productName" placeholder="Ex: Camiseta Personalizada">
+                        </div>
+                        <div class="form-field">
+                            <label>Custo de Produção (R$)</label>
+                            <input type="number" id="${name}-productionCost" step="0.01" min="0" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Custo de Embalagem (R$)</label>
+                            <input type="number" id="${name}-packagingCost" step="0.01" min="0" placeholder="0.00">
+                        </div>
+                        <div class="form-field">
+                            <label>Custo de Envio (R$)</label>
+                            <input type="number" id="${name}-shippingCost" step="0.01" min="0" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Outros Custos (R$)</label>
+                            <input type="number" id="${name}-otherCosts" step="0.01" min="0" placeholder="0.00">
+                        </div>
+                        <div class="form-field">
+                            <label>Preço de Venda (R$)</label>
+                            <input type="number" id="${name}-salePrice" step="0.01" min="0" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 15px;">
+                        <button onclick="addProduct('${name}')">➕ Adicionar Produto</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #333; margin-bottom: 15px;">📋 Lista de Produtos</h3>
+                    <div style="background: white; border-radius: 8px; border: 2px solid #e0e0e0; overflow-x: auto;">
+                        <div id="${name}-productList">
+                            <p style="text-align: center; color: #999; padding: 20px;">Nenhum produto cadastrado</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <h3>📊 Análise Geral - Todos os Produtos</h3>
+                    <div id="${name}-totals">
+                        <p style="text-align: center; color: #999; padding: 20px;">Adicione produtos para ver a análise geral</p>
+                    </div>
+                </div>
+            `;
+    }
+
+    function switchTab(name) {
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.tab-content');
+
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent === name) {
+          tab.classList.add('active');
+        }
+      });
+
+      contents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === `tab-${name}`) {
+          content.classList.add('active');
+        }
+      });
+    }
+
+
+
+    function formatCurrency(value) {
+      return 'R$ ' + value.toFixed(2).replace('.', ',');
+    }
+
+    function clearAllData() {
+      if (confirm('⚠️ Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
+        localStorage.removeItem('marketplaces');
+        localStorage.removeItem('products');
+        marketplaces = {};
+        products = {};
+
+        // Recriar marketplaces de exemplo
+        marketplaces['Shopee'] = { fee: 12.0 };
+        marketplaces['Mercado Livre'] = { fee: 16.0 };
+        products['Shopee'] = [];
+        products['Mercado Livre'] = [];
+
+        saveData();
+        renderTabs();
+
+        alert('✅ Todos os dados foram limpos com sucesso!');
+      }
+    }
+
+    // Carregar dados ao iniciar a página
+    loadData();
+
+    // Se não houver marketplaces salvos, criar os exemplos
+    if (Object.keys(marketplaces).length === 0) {
+      marketplaces['Shopee'] = { fee: 12.0 };
+      marketplaces['Mercado Livre'] = { fee: 16.0 };
+      products['Shopee'] = [];
+      products['Mercado Livre'] = [];
+      saveData();
+    }
+
+    renderTabs();
+  </script>
+</body>
+
+</html>
