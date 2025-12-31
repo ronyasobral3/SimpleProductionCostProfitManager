@@ -544,6 +544,14 @@
         content.innerHTML = createTabContent(name, marketplaces[name].fee);
         contentContainer.appendChild(content);
       });
+
+      // Renderizar listas de produtos e totais para cada marketplace
+      marketplaceNames.forEach(name => {
+        if (products[name] && products[name].length > 0) {
+          renderProductList(name);
+          calculateTotals(name);
+        }
+      });
     }
 
     function createTabContent(name, fee) {
